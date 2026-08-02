@@ -7,6 +7,19 @@
   "observability": {
     "enabled": true
   },
+  // Workers Builds uploads a version for every push to a pull-request branch.
+  // Each is reachable both by version prefix and by a stable branch alias —
+  // fix/thing serves at fix-thing-css-sota-mcp.lusrodri.workers.dev — so a PR
+  // can be tried in the AI Playground or the Inspector before it merges.
+  //
+  // Stated explicitly rather than relied on: Cloudflare made preview URLs
+  // opt-in in September 2025, and Wrangler 4.34+ defaults this to false. They
+  // work here today by inheritance, which is one tool upgrade away from
+  // silently going missing.
+  //
+  // Safe to expose because every version is the same read-only public server —
+  // there is no staging data or unreleased secret behind these URLs.
+  "preview_urls": true,
   "ratelimits": [
     {
       "name": "MCP_RATE_LIMITER",

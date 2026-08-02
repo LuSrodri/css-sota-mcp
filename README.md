@@ -158,6 +158,32 @@ The Worker's build command is **not** optional: `mcp/src/data/generated/` is git
 Because the two are independent products, neither waits for the other. `.github/workflows/verify.yml`
 covers that gap — it smoke-tests the live endpoint on a schedule and on demand.
 
+#### Previewing a pull request
+
+Every push to a PR branch uploads a Worker version and builds the landing site, each reachable
+before merge:
+
+| | URL |
+| --- | --- |
+| Worker, by branch | `https://<branch-with-dashes>-css-sota-mcp.lusrodri.workers.dev/mcp` |
+| Worker, by version | `https://<version-prefix>-css-sota-mcp.lusrodri.workers.dev/mcp` |
+| Landing | `https://<deployment-id>.css-sota-mcp.pages.dev` |
+
+The branch alias is the useful one — it stays put as you push. A branch named
+`fix/thing` becomes `fix-thing-css-sota-mcp.lusrodri.workers.dev`. Point the
+[AI Playground](https://playground.ai.cloudflare.com/) or MCP Inspector at it to try a PR's server
+for real; `node mcp/scripts/smoke.js <url>/mcp` works against it too.
+
+Two caveats:
+
+- **No automatic PR comment.** Cloudflare normally posts the preview links on the pull request;
+  this account cannot enable that (`12044: This account does not have access to Workers
+  Previews`). The URLs themselves work — you just construct them from the branch name.
+- **A landing preview always calls production**, since `VITE_MCP_ORIGIN` falls back to it. A PR
+  touching both halves will show a new front end against the old server: green preview, broken on
+  merge. Set `VITE_MCP_ORIGIN` on the preview build to that PR's Worker alias when a change needs
+  them to line up.
+
 To deploy by hand instead:
 
 ```bash
