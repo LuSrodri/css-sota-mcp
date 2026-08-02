@@ -19,9 +19,30 @@ the guess with the current answer.
 | `get_feature` | "Tell me everything about this one feature." | webstatus.dev + mdn/content |
 | `check_support` | "Which browser versions support this exactly?" | bundled browser-compat-data |
 | `audit_css` | "Does this stylesheet work for my users?" | bundled browser-compat-data |
+| `dont_make_me_think` | "How should this UI be designed — and is this page any good?" | bundled UX guidelines |
 
 `check_support` and `audit_css` answer with no network call at all — the data they need is compiled
 into the Worker.
+
+### `dont_make_me_think`
+
+Named after Steve Krug's rule: a page should be self-evident. Two modes.
+
+`mode: "guidelines"` returns the principles to design against — Nielsen's 10 heuristics, Hick's
+and Fitts's laws, WCAG 2.2, neurodiversity-inclusive design, motion and microinteractions
+(including when Lottie or Rive earn their bundle cost), SVG craft and animation, light-first
+theming, lightness, responsiveness. Filter with `topic`. The knowledge base is
+[`mcp/src/data/ux-guidelines.json`](mcp/src/data/ux-guidelines.json); every principle carries its
+rationale, actionable rules and a source.
+
+`mode: "review"` checks HTML and CSS — or a fetched `url` — and reports what violates which
+principle, with the line and the evidence.
+
+**It reads source; it does not render it.** A Worker has no layout engine, so the review cannot
+measure computed contrast, real target sizes, or where focus actually lands. It catches what is
+visible in the markup: missing `alt`, blocked zoom, animation with no reduced-motion path, a
+removed focus ring, a dark-only palette, vague link text, a nav past Hick's range. A clean result
+is a floor, not a pass, and the tool says so in its own output.
 
 ### `audit_css` targets
 

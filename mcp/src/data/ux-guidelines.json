@@ -1,0 +1,529 @@
+{
+  "version": "1.0.0",
+  "title": "Don't Make Me Think — UI/UX guidelines",
+  "premise": "Steve Krug's rule: a page should be self-evident. Every question a person has to stop and answer — what is this, where do I click, did that work — is a small tax on their attention. These guidelines exist to remove those questions, not to decorate the removal.",
+  "topics": {
+    "heuristics": "Nielsen's 10 usability heuristics",
+    "laws": "Hick's and Fitts's laws",
+    "wcag": "WCAG 2.2 conformance",
+    "neurodiversity": "Cognitive and neurodivergent inclusion",
+    "motion": "Motion design, microinteractions, Lottie and Rive",
+    "svg": "SVG craft and animation",
+    "theme": "Light-first theming",
+    "performance": "Lightness",
+    "responsive": "Responsiveness"
+  },
+  "principles": [
+    {
+      "id": "nielsen-1-visibility",
+      "topic": "heuristics",
+      "title": "Visibility of system status",
+      "principle": "The interface always tells people what is happening, through feedback that arrives fast enough to feel like a reply.",
+      "why": "Silence reads as breakage. A person who does not know whether their click registered will click again, or leave.",
+      "rules": [
+        "Acknowledge every action within 100ms, even if the result takes longer — a pressed state counts.",
+        "Show progress for anything past ~1s; show remaining time or a determinate bar past ~10s.",
+        "Never leave a submitted form in the same visual state it had before submission."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-2-real-world",
+      "topic": "heuristics",
+      "title": "Match between the system and the real world",
+      "principle": "Speak the user's language — their words, their concepts, their ordering — not the system's internals.",
+      "why": "Interface vocabulary is the signposting people navigate by. Naming things after your implementation forces them to learn your architecture before they can use your product.",
+      "rules": [
+        "Name controls after what the person does, never after how it is built.",
+        "Order information the way the task runs, not the way the data model is shaped.",
+        "Use the units, date formats and conventions of the reader's locale."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-3-control",
+      "topic": "heuristics",
+      "title": "User control and freedom",
+      "principle": "People pick the wrong thing constantly. Every path in needs a visible path out.",
+      "why": "Fear of being trapped makes people explore less, which makes them slower at everything else.",
+      "rules": [
+        "Offer undo rather than a confirmation dialog wherever the action is reversible.",
+        "Make cancel always available and never the destructive default.",
+        "Never trap keyboard focus in a component the user cannot escape with Escape."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-4-consistency",
+      "topic": "heuristics",
+      "title": "Consistency and standards",
+      "principle": "The same thing looks the same and is called the same everywhere. Platform conventions win over invention.",
+      "why": "People spend most of their time on other sites. What they have already learned there is the cheapest thing you can give them.",
+      "rules": [
+        "One action keeps one name through the whole flow: a button that says Publish produces a toast that says Published.",
+        "Do not restyle a native control into something that behaves differently from what it looks like.",
+        "Links look like links, buttons look like buttons, and each does what its appearance promises."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-5-error-prevention",
+      "topic": "heuristics",
+      "title": "Error prevention",
+      "principle": "Designing the mistake out beats explaining it afterwards.",
+      "why": "The best error message is the one that never had to be written.",
+      "rules": [
+        "Constrain input to what is valid instead of validating free text after the fact.",
+        "Separate destructive controls from routine ones by distance, not just colour.",
+        "Warn before the point of no return, and only there — a confirmation on everything trains people to dismiss confirmations."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-6-recognition",
+      "topic": "heuristics",
+      "title": "Recognition rather than recall",
+      "principle": "Show the options. Do not make people remember something from one screen to use it on the next.",
+      "why": "Recognition is nearly free; recall is expensive and fails under stress.",
+      "rules": [
+        "Keep the information needed for a step visible during that step.",
+        "Label icons unless the icon is universally understood — and almost none are.",
+        "Carry entered values forward instead of asking twice (WCAG 3.3.7)."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-7-flexibility",
+      "topic": "heuristics",
+      "title": "Flexibility and efficiency of use",
+      "principle": "Serve the first-time user and the thousandth-time user without making either pay for the other.",
+      "why": "Accelerators are invisible to novices and decisive for experts.",
+      "rules": [
+        "Add keyboard shortcuts for the actions people repeat, and surface them in tooltips.",
+        "Let frequent paths be personalised or remembered rather than re-navigated.",
+        "Never gate a fast path behind an onboarding the expert has to sit through again."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-8-minimalist",
+      "topic": "heuristics",
+      "title": "Aesthetic and minimalist design",
+      "principle": "Every element competes with every other for attention. Anything that is not needed weakens what is.",
+      "why": "Minimalism here is not a style — it is a ratio. Cutting the unnecessary raises the visibility of the necessary.",
+      "rules": [
+        "Cut anything that does not help the page's single job.",
+        "Prefer progressive disclosure to a screen that shows everything at once.",
+        "Give the primary action one visual treatment nothing else on the page shares."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-9-errors",
+      "topic": "heuristics",
+      "title": "Help users recognise, diagnose and recover from errors",
+      "principle": "An error says what happened, in plain words, and what to do next.",
+      "why": "An error that only announces failure leaves the person exactly where they were stuck.",
+      "rules": [
+        "No codes without prose, and no prose without a next step.",
+        "Put the message next to the thing that went wrong, not only in a banner.",
+        "Do not apologise or blame — state the problem and the fix."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "nielsen-10-help",
+      "topic": "heuristics",
+      "title": "Help and documentation",
+      "principle": "Ideally none is needed; realistically it must be findable, searchable and task-shaped.",
+      "why": "People reach documentation mid-task, already frustrated, and will not read a manual to finish one step.",
+      "rules": [
+        "Put help where the task is, not only in a separate section.",
+        "Keep help in the same relative place on every page (WCAG 3.2.6).",
+        "Write it as steps to a goal, not as a description of features."
+      ],
+      "source": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "id": "hicks-law",
+      "topic": "laws",
+      "title": "Hick's Law — decision time grows with choices",
+      "principle": "The time to decide increases with the number and complexity of the options presented.",
+      "why": "Every extra option is work the person did not ask for. Choice overload reads as complexity even when each choice is simple.",
+      "rules": [
+        "Keep top-level navigation to roughly 5–7 items; beyond that, group.",
+        "Highlight one recommended option instead of presenting equals.",
+        "Break long forms and flows into steps rather than one dense screen.",
+        "Do not simplify to the point of abstraction — a vague label is a slower decision than a longer clear one."
+      ],
+      "source": "https://lawsofux.com/hicks-law/"
+    },
+    {
+      "id": "fitts-law",
+      "topic": "laws",
+      "title": "Fitts's Law — target size and distance",
+      "principle": "The time to hit a target is a function of its size and how far away it is. Small and far is slow and error-prone.",
+      "why": "Speed and accuracy trade against each other. Small targets do not just take longer, they produce wrong clicks.",
+      "rules": [
+        "Make interactive targets at least 24×24 CSS px, and 44×44 for anything primary or touch-first.",
+        "Leave spacing between adjacent targets so a near miss does nothing rather than the wrong thing.",
+        "Put the action near the content it acts on — travel distance is part of the cost.",
+        "Screen edges and corners are effectively infinite targets; use them for high-frequency controls."
+      ],
+      "source": "https://lawsofux.com/fittss-law/"
+    },
+    {
+      "id": "doherty-threshold",
+      "topic": "laws",
+      "title": "Doherty Threshold — stay under 400ms",
+      "principle": "Interaction below roughly 400ms keeps a person in flow; above it, they start waiting on the machine.",
+      "why": "Attention leaks at the pause. Perceived speed is a usability property, not a performance metric.",
+      "rules": [
+        "Respond to input in under 100ms, complete common actions in under 400ms.",
+        "Use optimistic UI where the action is nearly certain to succeed and cheap to reverse.",
+        "If you cannot be fast, be informative — a determinate progress indicator changes the felt duration."
+      ],
+      "source": "https://lawsofux.com/doherty-threshold/"
+    },
+    {
+      "id": "wcag-perceivable-text-alternatives",
+      "topic": "wcag",
+      "title": "Text alternatives (1.1.1, A)",
+      "principle": "Every non-text element that carries meaning has a text equivalent; every decorative one is hidden from assistive technology.",
+      "why": "An unlabelled image is a dead end for a screen reader user, and a decorative image announced aloud is noise.",
+      "rules": [
+        "Meaningful images get alt text describing their purpose, not their appearance.",
+        "Decorative images get alt=\"\" and inline SVGs get aria-hidden=\"true\".",
+        "Icon-only buttons carry an accessible name via aria-label or visually hidden text."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content"
+    },
+    {
+      "id": "wcag-contrast",
+      "topic": "wcag",
+      "title": "Contrast (1.4.3 AA, 1.4.11 AA)",
+      "principle": "Body text needs 4.5:1 against its background, large text 3:1, and UI components and graphical objects 3:1.",
+      "why": "Contrast is the single most common accessibility failure on the web, and it degrades for everyone in sunlight or on a cheap panel.",
+      "rules": [
+        "4.5:1 for text under 24px (or under 19px bold); 3:1 above that.",
+        "3:1 for borders, icons and focus indicators that convey meaning.",
+        "Never rely on colour alone to convey state — pair it with text, shape or an icon (1.4.1)."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum"
+    },
+    {
+      "id": "wcag-zoom-reflow",
+      "topic": "wcag",
+      "title": "Resize and reflow (1.4.4 AA, 1.4.10 AA)",
+      "principle": "Text scales to 200% and content reflows to a 320px-wide viewport without loss of information or two-dimensional scrolling.",
+      "why": "Zoom is the most used accessibility feature there is. Blocking it breaks the page for people who never identify as disabled.",
+      "rules": [
+        "Never set user-scalable=no or maximum-scale on the viewport meta tag.",
+        "Size text in rem or em so it responds to the user's font-size preference.",
+        "Test at 320px width and at 200% zoom; nothing should require horizontal scrolling except data tables and code."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/reflow"
+    },
+    {
+      "id": "wcag-focus-visible",
+      "topic": "wcag",
+      "title": "Focus visible and not obscured (2.4.7 AA, 2.4.11 AA, 2.4.13 AAA)",
+      "principle": "Keyboard focus is always visible, at least partially unobscured, and clearly distinguishable from the unfocused state.",
+      "why": "For a keyboard or switch user, the focus ring is the cursor. Removing it is removing the pointer.",
+      "rules": [
+        "Never write outline: none without providing a replacement indicator on :focus-visible.",
+        "Focus indicators need at least a 2px perimeter and 3:1 contrast against the unfocused state (2.4.13).",
+        "Sticky headers and footers must not hide the focused element (2.4.11)."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum"
+    },
+    {
+      "id": "wcag-target-size",
+      "topic": "wcag",
+      "title": "Target size minimum (2.5.8, AA)",
+      "principle": "Pointer targets are at least 24×24 CSS px, or spaced so that 24px circles centred on them do not overlap.",
+      "why": "Hand tremor, a moving bus, or a thumb on a large phone all make small adjacent targets a coin flip.",
+      "rules": [
+        "24×24 is the floor, not the goal — 44×44 for primary and touch-first controls.",
+        "Inline links within a sentence are exempt; standalone controls are not.",
+        "Padding counts toward target size, so grow the hit area rather than the glyph."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum"
+    },
+    {
+      "id": "wcag-dragging",
+      "topic": "wcag",
+      "title": "Dragging movements (2.5.7, AA)",
+      "principle": "Anything operable by dragging has a single-pointer alternative, unless dragging is essential.",
+      "why": "Holding and moving accurately is exactly what a tremor, a trackpad, or a switch device makes hard.",
+      "rules": [
+        "Reorderable lists need up/down controls alongside drag handles.",
+        "Sliders need keyboard arrow support and, ideally, a numeric input.",
+        "Map and canvas panning needs buttons or keyboard equivalents."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements"
+    },
+    {
+      "id": "wcag-accessible-auth",
+      "topic": "wcag",
+      "title": "Accessible authentication (3.3.8, AA)",
+      "principle": "Do not require solving, recalling or transcribing anything to log in.",
+      "why": "A cognitive function test at the door excludes people before they reach the product.",
+      "rules": [
+        "Allow paste and password managers on every credential field.",
+        "Offer an alternative to puzzle or memory-based authentication — a link sent by email qualifies.",
+        "Do not ask for the same information twice in one process (3.3.7)."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/accessible-authentication-minimum"
+    },
+    {
+      "id": "wcag-semantics-landmarks",
+      "topic": "wcag",
+      "title": "Structure, semantics and landmarks (1.3.1 A, 2.4.6 AA)",
+      "principle": "The document's structure is expressed in markup, not only in appearance: one h1, a nested heading order, real landmarks, real controls.",
+      "why": "Assistive technology navigates by structure. A page that only looks structured is unnavigable.",
+      "rules": [
+        "One h1 per page and no skipped heading levels.",
+        "Use header, nav, main, footer instead of divs with classes.",
+        "Use button for actions and a for navigation; a div with a click handler is neither focusable nor announced.",
+        "Set lang on the html element."
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships"
+    },
+    {
+      "id": "neuro-plain-language",
+      "topic": "neurodiversity",
+      "title": "Plain, literal language",
+      "principle": "Write short, concrete, literal sentences. Idioms, metaphor and irony are barriers, not personality.",
+      "why": "Autistic readers frequently process language literally; readers with ADHD or dyslexia lose the thread in long sentences. Neither is helped by cleverness.",
+      "rules": [
+        "One idea per sentence, active voice, no figures of speech.",
+        "Expand acronyms on first use, on every page.",
+        "Never label a button 'Click here' or 'Learn more' — say what happens.",
+        "Front-load the point; do not build to it."
+      ],
+      "source": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/"
+    },
+    {
+      "id": "neuro-visual-calm",
+      "topic": "neurodiversity",
+      "title": "Visual calm over visual intensity",
+      "principle": "Avoid bright clashing colours, dense walls of text and cluttered layouts. Give content room.",
+      "why": "Sensory overload is a real exit condition. What reads as 'vibrant' to one person is unusable to another.",
+      "rules": [
+        "Avoid saturated complementary colours next to each other at large areas.",
+        "Break text into short paragraphs with headings and generous line height (1.5+).",
+        "Keep line length around 60–75 characters.",
+        "Use whitespace as structure rather than borders and boxes everywhere."
+      ],
+      "source": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/"
+    },
+    {
+      "id": "neuro-predictability",
+      "topic": "neurodiversity",
+      "title": "Predictability and user control over change",
+      "principle": "Nothing moves, appears, or changes context without the person causing it.",
+      "why": "Unexpected change costs re-orientation, which is expensive for ADHD and autistic users in particular, and disorienting for everyone.",
+      "rules": [
+        "No auto-playing carousels, videos or audio.",
+        "No content that shifts after load — reserve space for anything that arrives late.",
+        "Do not change context on focus or on input (WCAG 3.2.1, 3.2.2).",
+        "Let people pause, stop or hide anything that moves for more than 5 seconds (WCAG 2.2.2)."
+      ],
+      "source": "https://dwpdigital.blog.gov.uk/2022/06/30/designing-accessible-services-dont-exclude-the-neurodiverse/"
+    },
+    {
+      "id": "neuro-no-time-pressure",
+      "topic": "neurodiversity",
+      "title": "No arbitrary time pressure",
+      "principle": "Do not impose deadlines the task does not require, and never lose someone's work to a timeout.",
+      "why": "Time limits convert a manageable task into a stressful one, and stress narrows working memory further.",
+      "rules": [
+        "Warn before a session expires and allow extension (WCAG 2.2.1).",
+        "Preserve entered data across a timeout or a back navigation.",
+        "Avoid countdowns and scarcity timers; they are a dark pattern that hits anxious users hardest."
+      ],
+      "source": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/"
+    },
+    {
+      "id": "neuro-heuristics-not-laws",
+      "topic": "neurodiversity",
+      "title": "These are heuristics, and users disagree",
+      "principle": "Neurodivergence is not one profile. Guidance that helps one reader can hinder another, so preferences beat defaults.",
+      "why": "The GOV.UK dyslexia poster recommends left-aligned text; a dyslexic commenter on that very post said justified text is what keeps them from losing the line. Both are true of different people.",
+      "rules": [
+        "Where guidance conflicts, offer the choice rather than picking for everyone.",
+        "Respect OS-level preferences before your own defaults: reduced motion, contrast, colour scheme, font size.",
+        "Test with real users; a checklist is a starting point, not evidence."
+      ],
+      "source": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/"
+    },
+    {
+      "id": "motion-purpose",
+      "topic": "motion",
+      "title": "Motion has a job or it does not ship",
+      "principle": "Animation exists to explain a change: where a thing came from, where it went, what is now different. Decorative motion is cost without payment.",
+      "why": "Motion is the most attention-grabbing thing on a screen. Spending that on decoration means having nothing left for the moments that matter.",
+      "rules": [
+        "Animate to show causality, continuity or hierarchy — never to fill silence.",
+        "Spend the boldest motion on one signature moment; keep everything around it quiet.",
+        "If removing an animation costs the user nothing, remove it."
+      ],
+      "source": "https://www.nngroup.com/articles/animation-purpose-ux/"
+    },
+    {
+      "id": "motion-timing",
+      "topic": "motion",
+      "title": "Timing and easing",
+      "principle": "UI motion lives between roughly 150ms and 400ms, with easing that matches the direction of travel.",
+      "why": "Under 100ms reads as an instant cut; over 500ms the person is waiting on an animation, which is worse than no animation.",
+      "rules": [
+        "150–250ms for small changes (hover, toggle), 250–400ms for larger transitions.",
+        "ease-out for things entering, ease-in for things leaving, ease-in-out for things moving in place.",
+        "Never animate a blocking transition longer than 400ms.",
+        "Animate transform and opacity; animating layout properties drops frames."
+      ],
+      "source": "https://m3.material.io/styles/motion/overview"
+    },
+    {
+      "id": "motion-reduced",
+      "topic": "motion",
+      "title": "Respect prefers-reduced-motion",
+      "principle": "Every motion design has a reduced variant, and the reduced variant is not 'broken with the animation removed'.",
+      "why": "Vestibular disorders make large motion physically sickening. The OS setting is a medical preference, not a style choice.",
+      "rules": [
+        "Wrap non-essential motion in a prefers-reduced-motion: no-preference guard, or neutralise it under reduce.",
+        "Under reduce, keep state changes legible — cross-fade instead of translating, or cut instantly.",
+        "Parallax, auto-scroll and large-scale zooms are the highest-risk patterns; drop them entirely under reduce.",
+        "Pause Lottie and Rive playback under reduce rather than merely hiding the canvas."
+      ],
+      "source": "https://web.dev/articles/prefers-reduced-motion"
+    },
+    {
+      "id": "motion-microinteractions",
+      "topic": "motion",
+      "title": "Microinteractions and instant feedback",
+      "principle": "Every interactive element acknowledges input immediately, in the same place the input happened.",
+      "why": "The gap between action and acknowledgement is where doubt lives. Closing it under 100ms removes the doubt entirely.",
+      "rules": [
+        "Give every control hover, active, focus-visible and disabled states — all four.",
+        "Acknowledge press within 100ms even when the result takes seconds.",
+        "Put the feedback at the point of interaction, not only in a corner toast.",
+        "Make success and failure feel different in more than colour: shape, position or motion too.",
+        "Never animate away a message the person has not had time to read."
+      ],
+      "source": "https://lawsofux.com/doherty-threshold/"
+    },
+    {
+      "id": "motion-lottie-rive",
+      "topic": "motion",
+      "title": "Choosing Lottie or Rive — and whether to use either",
+      "principle": "CSS and the Web Animations API cost nothing at runtime. Reach for a vector animation runtime only when the animation is beyond their reach.",
+      "why": "Rive's WASM renderer adds roughly 200KB and dotLottie roughly 50KB before a single frame plays. That is a real budget being spent on something CSS may already do.",
+      "rules": [
+        "Default to CSS transitions and keyframes; they are composited, cost zero bytes, and respect reduced motion trivially.",
+        "Use Lottie (prefer .lottie over raw .json — around 80% smaller) for designer-authored, timeline-based illustrations that play through.",
+        "Use Rive when the animation must respond to state: its state machine is the reason to pay the bundle cost, not its file size.",
+        "File size is no longer a meaningful differentiator between .lottie and .riv; choose on interactivity and tooling.",
+        "Lazy-load the runtime and the asset, and never block first paint on either.",
+        "Give every animation a text equivalent or aria-hidden — a canvas is invisible to assistive technology."
+      ],
+      "source": "https://lottiefiles.com/blog/lottie-animations/lottiefiles-or-rive"
+    },
+    {
+      "id": "svg-craft",
+      "topic": "svg",
+      "title": "SVG craft — detail that survives scaling",
+      "principle": "A beautiful SVG is built on a consistent grid with intentional geometry, not traced from a raster and cleaned up afterwards.",
+      "why": "Vector art is read at every size. Inconsistent stroke weights and off-grid coordinates read as sloppiness precisely because the format cannot hide them.",
+      "rules": [
+        "Draw on a consistent viewBox (24, 48 or 64 units) and keep coordinates on the grid.",
+        "Keep stroke widths consistent across a set, and use vector-effect: non-scaling-stroke where scale must not thicken lines.",
+        "Prefer stroke-linecap: round and stroke-linejoin: round for warmth, square for precision — pick one per set and hold it.",
+        "Build depth with layered fills, gradients and opacity rather than raster shadows.",
+        "Use currentColor for anything that should inherit text colour, so one icon serves every theme.",
+        "Optimise the path data — remove editor metadata, round coordinates to 2 decimals, merge duplicate paths.",
+        "Give meaningful SVGs a <title> and role=\"img\"; give decorative ones aria-hidden=\"true\"."
+      ],
+      "source": "https://developer.mozilla.org/docs/Web/SVG"
+    },
+    {
+      "id": "svg-animation",
+      "topic": "svg",
+      "title": "SVG animation — technique by intent",
+      "principle": "Animate SVG with the cheapest technique that achieves the intent, and let the drawing itself carry the detail.",
+      "why": "SVG can be animated four different ways with wildly different costs. Choosing by habit rather than by intent is where performance and accessibility problems come from.",
+      "rules": [
+        "Line drawing: animate stroke-dasharray and stroke-dashoffset — one property, composited, no dependency.",
+        "Morphing between shapes: requires matching point counts; author both states from the same base path.",
+        "Transforms on SVG children: prefer CSS transform with transform-box: fill-box and an explicit transform-origin, or coordinates go somewhere surprising.",
+        "Stagger related elements by 30–60ms rather than firing them together; sequence is what makes motion feel authored.",
+        "Do not animate filter or complex masks per frame — they are not composited and will drop frames.",
+        "Keep SMIL out of new work; CSS and the Web Animations API are better supported and controllable.",
+        "Everything here is still motion: guard it with prefers-reduced-motion."
+      ],
+      "source": "https://developer.mozilla.org/docs/Web/SVG/Attribute/stroke-dashoffset"
+    },
+    {
+      "id": "theme-light-first",
+      "topic": "theme",
+      "title": "Light theme is the default",
+      "principle": "Ship a light theme. Offer a dark alternative only where the niche genuinely demands it, and never as the only option.",
+      "why": "Light-on-dark reduces reading accuracy for most sighted readers and is actively worse for people with astigmatism, where light text on dark backgrounds smears. Dark mode is a preference for a minority of contexts, not a neutral default.",
+      "rules": [
+        "The default palette — with no media query and no toggle — must be the light one.",
+        "Do not set color-scheme: dark alone, and do not define a dark palette without a light one.",
+        "Justify a dark option by the niche: prolonged low-light use, media viewing, code editing, astronomy, camera and photo tools. 'It looks modern' is not a justification.",
+        "When a dark theme exists, drive it from prefers-color-scheme and let an explicit toggle override the system, never the reverse.",
+        "A dark theme is not an inverted light theme: reduce contrast slightly, desaturate, and re-check every contrast ratio."
+      ],
+      "source": "https://www.nngroup.com/articles/dark-mode/"
+    },
+    {
+      "id": "perf-lightness",
+      "topic": "performance",
+      "title": "Lightness is a feature",
+      "principle": "Weight is felt as sluggishness, and sluggishness is felt as bad design. The fastest asset is the one not sent.",
+      "why": "Perceived performance is inseparable from perceived quality. A beautiful page that takes three seconds is not a beautiful page.",
+      "rules": [
+        "Budget the critical path: HTML plus critical CSS under 100KB compressed.",
+        "Self-host fonts, subset them, and limit to two families and the weights actually used.",
+        "Use font-display: swap or optional so text never waits on a font.",
+        "Give every image explicit width and height, or aspect-ratio, to reserve space and prevent layout shift.",
+        "Lazy-load anything below the fold, and never lazy-load the LCP element.",
+        "Defer non-critical JavaScript; nothing above the fold should wait on a script.",
+        "Use content-visibility: auto on long off-screen sections, with contain-intrinsic-size so the scrollbar stays stable."
+      ],
+      "source": "https://web.dev/articles/vitals"
+    },
+    {
+      "id": "responsive-fluid",
+      "topic": "responsive",
+      "title": "Responsive by intrinsic sizing, not by breakpoint list",
+      "principle": "Let content decide when the layout changes. Breakpoints tied to device widths are a maintenance treadmill.",
+      "why": "There is no canonical set of device sizes, and there never was. Layouts that respond to their own content survive hardware you have not seen.",
+      "rules": [
+        "Prefer clamp(), min(), max() and fluid type scales to fixed steps.",
+        "Use container queries for components so a card lays itself out by its own width, not the viewport's.",
+        "Design mobile-first: the small layout is the constrained one and should be authored first.",
+        "Never let the page scroll horizontally; wide content (tables, code, diagrams) scrolls inside its own container.",
+        "Test at 320px, at 200% zoom, and in landscape on a short viewport."
+      ],
+      "source": "https://web.dev/learn/design"
+    },
+    {
+      "id": "responsive-input-agnostic",
+      "topic": "responsive",
+      "title": "Do not assume the input device",
+      "principle": "Screen size does not tell you whether there is a mouse, a finger, a stylus or a keyboard. Assume all of them.",
+      "why": "Touch laptops, desktop touchscreens and tablets with trackpads all break the width-implies-input assumption.",
+      "rules": [
+        "Never gate functionality behind hover — hover is an enhancement, not an affordance.",
+        "Use pointer: coarse and any-hover for capability, never viewport width.",
+        "Every pointer interaction has a keyboard equivalent.",
+        "Size for touch everywhere; a large target harms nobody with a mouse."
+      ],
+      "source": "https://developer.mozilla.org/docs/Web/CSS/@media/pointer"
+    }
+  ]
+}
