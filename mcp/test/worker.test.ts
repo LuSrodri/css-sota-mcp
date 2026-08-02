@@ -60,7 +60,16 @@ describe('routing', () => {
 
     expect(response.status).toBe(200);
     expect(body.endpoint).toBe('https://example.com/mcp');
-    expect(body.tools).toHaveLength(5);
+    // Named rather than counted: a bare length assertion goes stale silently
+    // the moment a tool is added, and says nothing about which ones are served.
+    expect([...body.tools].sort()).toEqual([
+      'audit_css',
+      'check_support',
+      'dont_make_me_think',
+      'get_feature',
+      'search_css_features',
+      'whats_new',
+    ]);
   });
 
   it('reports data provenance at /health', async () => {

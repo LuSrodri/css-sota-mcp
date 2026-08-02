@@ -105,7 +105,7 @@
 
       <section class="tools" id="tools">
         <header class="section-head">
-          <h2>Five tools, five questions</h2>
+          <h2>Six tools, six questions</h2>
           <p>
             Each one answers something a developer actually asks mid-task. The agent picks by
             question, not by guessing at names.
@@ -152,15 +152,25 @@
             <p class="tool__src" data-src="bundled">Bundled · browser-compat-data</p>
           </li>
 
-          <li class="tool tool--wide">
+          <li class="tool">
             <p class="tool__q">“Does this stylesheet work for my users?”</p>
             <h3 class="tool__name">audit_css</h3>
             <p class="tool__desc">
               Scans real CSS and reports every feature that misses your target, with the line it's
-              on, what's wrong, and the minimum version that would work. Target a Baseline level or
-              an explicit browser list.
+              on, what's wrong, and the minimum version that would work.
             </p>
             <p class="tool__src" data-src="bundled">Bundled · browser-compat-data</p>
+          </li>
+
+          <li class="tool">
+            <p class="tool__q">“How should this be designed — and is this page any good?”</p>
+            <h3 class="tool__name">dont_make_me_think</h3>
+            <p class="tool__desc">
+              Nielsen's heuristics, Hick and Fitts, WCAG 2.2, neurodiversity, motion, SVG craft —
+              37 principles to design against, and a static review that says which one a page
+              breaks.
+            </p>
+            <p class="tool__src" data-src="bundled">Bundled · UX guidelines</p>
           </li>
         </ul>
       </section>
@@ -279,6 +289,10 @@
         <code>contrast-color()</code> and <code>field-sizing</code> — all Baseline newly available.
         CI audits this page's own stylesheet with the server above and fails on anything below that
         line, because the first version of it shipped <code>text-wrap: pretty</code>, which is not.
+      </p>
+      <p class="footer__wink">
+        Light only, on purpose. The <code>dont_make_me_think</code> tool flagged the dark theme this
+        page used to have: dark is worth it in specific niches, and documentation is not one.
       </p>
     </footer>
 
