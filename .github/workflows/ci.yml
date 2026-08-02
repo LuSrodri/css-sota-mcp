@@ -61,6 +61,12 @@ jobs:
       - name: MCP protocol smoke test
         run: node mcp/scripts/smoke.js http://127.0.0.1:8787/mcp --offline
 
+      # The landing page claims to be built only from CSS you can actually
+      # ship. Check that with the server it advertises, against the instance
+      # just booted rather than the deployed one.
+      - name: Audit the landing stylesheet with the server itself
+        run: node landing/scripts/audit-styles.js http://127.0.0.1:8787/mcp
+
       - name: Stop the Worker
         if: always()
         run: kill "$(cat /tmp/wrangler.pid)" 2>/dev/null || true

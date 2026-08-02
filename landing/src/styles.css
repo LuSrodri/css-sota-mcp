@@ -1,9 +1,16 @@
 /*
  * css-sota-mcp landing page.
  *
- * The palette is written in oklch() and the layout uses :has() and container
- * queries — all Baseline newly available, and all things this server will tell
- * you about. Building the page out of its own subject matter is the point.
+ * The page is built from its own subject matter: oklch(), :has(), container
+ * queries, contrast-color() and field-sizing are all Baseline newly available,
+ * and all things this server will tell you about.
+ *
+ * That claim is enforced, not asserted. `npm run audit:styles` runs this file
+ * through the server's own audit_css tool and fails on anything below Baseline
+ * newly; CI runs it against the Worker it just booted. The gate exists because
+ * the first version of this file shipped `text-wrap: pretty`, which is Limited
+ * availability — exactly the mistake the server was built to catch, made on the
+ * page advertising it.
  */
 
 :root {
@@ -272,16 +279,26 @@ textarea {
 
 .btn--solid {
   background: var(--accent);
+  /* The literal is the fallback; contrast-color() overrides it where supported
+     and picks a readable value against whatever --accent resolves to. That
+     removes the light/dark override this rule used to need, which is the whole
+     point of the function. */
   color: oklch(0.99 0 0);
+  color: contrast-color(var(--accent));
 }
 
 .btn--solid:hover {
   background: var(--accent-deep);
+  color: contrast-color(var(--accent-deep));
 }
 
-@media (prefers-color-scheme: dark) {
-  .btn--solid {
-    color: oklch(0.16 0.02 275);
+/* Only needed by browsers without contrast-color(); the function handles the
+   dark palette on its own. */
+@supports not (color: contrast-color(black)) {
+  @media (prefers-color-scheme: dark) {
+    .btn--solid {
+      color: oklch(0.16 0.02 275);
+    }
   }
 }
 
@@ -332,6 +349,16 @@ textarea {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   resize: vertical;
+}
+
+/* Paste a real stylesheet in and the box grows to fit it instead of making you
+   scroll a seven-row window. Capped so a large paste cannot push the verdict —
+   the thing you came to read — off screen. `rows` on the element is the
+   fallback for browsers without field-sizing. */
+.demo__source {
+  field-sizing: content;
+  min-block-size: 9lh;
+  max-block-size: 22lh;
 }
 
 .demo__controls {
@@ -482,6 +509,12 @@ textarea {
   margin-inline: auto;
   padding-block: clamp(3rem, 6vw, 5rem);
   border-top: 1px solid var(--rule);
+  /* Everything below the hero starts off screen; skipping its layout and paint
+     until it scrolls into view is free. The intrinsic size is a placeholder so
+     the scrollbar does not jump as each section is rendered for the first
+     time — without it, content-visibility trades one problem for another. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 /* ---------- Tools ---------- */
@@ -527,7 +560,6 @@ textarea {
   color: var(--ink-faint);
   font-size: 0.92rem;
   font-style: italic;
-  text-wrap: pretty;
 }
 
 .tool__name {
@@ -543,7 +575,6 @@ textarea {
   margin: 0;
   color: var(--ink-soft);
   font-size: 0.94rem;
-  text-wrap: pretty;
 }
 
 .tool__src,
@@ -672,7 +703,6 @@ textarea {
   margin: 0;
   color: var(--ink-soft);
   font-size: 0.93rem;
-  text-wrap: pretty;
 }
 
 .source code {

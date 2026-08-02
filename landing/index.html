@@ -275,8 +275,10 @@
         <a href="https://github.com/LuSrodri/css-sota-mcp/blob/main/LICENSE">MIT</a>
       </p>
       <p class="footer__wink">
-        This page is styled with <code>oklch()</code>, <code>:has()</code> and container queries —
-        all Baseline newly available. It practises what it reports.
+        Styled with <code>oklch()</code>, <code>:has()</code>, container queries,
+        <code>contrast-color()</code> and <code>field-sizing</code> — all Baseline newly available.
+        CI audits this page's own stylesheet with the server above and fails on anything below that
+        line, because the first version of it shipped <code>text-wrap: pretty</code>, which is not.
       </p>
     </footer>
 
