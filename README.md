@@ -9,6 +9,8 @@ the guess with the current answer.
 
 - **Endpoint** — `https://css-sota-mcp.lusrodri.workers.dev/mcp` (Streamable HTTP, no auth)
 - **Docs** — [css-sota-mcp.pages.dev](https://css-sota-mcp.pages.dev)
+- **Registry** — `io.github.LuSrodri/css-sota-mcp`, listed in the
+  [official MCP Registry](https://registry.modelcontextprotocol.io)
 
 ## Tools
 
@@ -179,6 +181,26 @@ The Worker's build command is **not** optional: `mcp/src/data/generated/` is git
 
 Because the two are independent products, neither waits for the other. `.github/workflows/verify.yml`
 covers that gap — it smoke-tests the live endpoint on a schedule and on demand.
+
+#### Publishing to the registry
+
+[`server.json`](server.json) is the registry's record of this server. Because the server is remote,
+it carries a `remotes` entry pointing at the Worker rather than a `packages` one — there is no
+artifact to install, and so no package-ownership marker to place anywhere.
+
+`.github/workflows/publish-mcp.yml` republishes it on a `v*` tag:
+
+```bash
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+The tag sets the version, so `server.json`'s own value is only a fallback for a manual
+`workflow_dispatch` run. The job authenticates with OIDC — proving it runs in this repository is
+what grants the `io.github.LuSrodri/*` namespace — so there is no token stored in GitHub, matching
+how the rest of this repo deploys.
+
+It deliberately does not run on every push. The registry record points at a URL, not at a build, so
+it stays correct across deploys; only a metadata change needs a new version.
 
 #### Previewing a pull request
 
