@@ -6,7 +6,7 @@
     <title>css-sota-mcp — know what CSS you can ship</title>
     <meta
       name="description"
-      content="An MCP server that answers what CSS you can actually ship today, from live Baseline data and MDN browser-compat-data. Five tools for searching features, checking support, and auditing stylesheets."
+      content="An MCP server that answers what CSS you can actually ship today, from live Baseline data and MDN browser-compat-data. Six tools for searching features, checking support, auditing stylesheets and reviewing UI."
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:title" content="css-sota-mcp" />
@@ -53,12 +53,18 @@
             <label class="endpoint__label" for="endpoint-url">Streamable HTTP endpoint</label>
             <div class="endpoint__row">
               <input id="endpoint-url" class="endpoint__url" readonly value="" />
-              <button class="btn btn--solid" type="button" data-copy="#endpoint-url">
+              <button
+                class="btn btn--solid"
+                type="button"
+                data-copy="#endpoint-url"
+                aria-label="Copy the endpoint URL"
+              >
                 Copy
               </button>
             </div>
             <p class="endpoint__note">
-              No key, no account, no rate limit. Read-only.
+              No key, no account. Read-only, and capped at 120 requests a minute per address —
+              roughly ten times what an agent working through a task actually uses.
             </p>
           </div>
         </div>
@@ -199,23 +205,51 @@
 
           <div class="tabs__panels">
             <div class="panel" role="tabpanel" id="p-cc" aria-labelledby="t-cc">
-              <pre class="code" data-copyable><code id="snippet-cc"></code></pre>
-              <p class="panel__note">Then ask: “audit src/styles.css for baseline-widely”.</p>
+              <div class="codeblock">
+                <pre class="code"><code id="snippet-cc"></code></pre>
+                <button class="copy" type="button" data-copy="#snippet-cc">
+                  <span aria-hidden="true">Copy</span>
+                  <span class="sr-only">Copy the Claude Code command</span>
+                </button>
+              </div>
+              <p class="panel__note">
+                <code>--scope user</code> registers it once for every project on the machine. Leave
+                it out and the server is added to the current project only. Then ask: “audit
+                src/styles.css for baseline-widely”.
+              </p>
             </div>
 
             <div class="panel" role="tabpanel" id="p-json" aria-labelledby="t-json" hidden>
-              <pre class="code" data-copyable><code id="snippet-json"></code></pre>
+              <p class="panel__lede">
+                Remote servers go in through Connectors, not through
+                <code>claude_desktop_config.json</code> — that file only takes local stdio servers.
+                Open Settings → Connectors → Add custom connector and paste the endpoint.
+              </p>
+              <div class="codeblock">
+                <pre class="code"><code id="snippet-desktop"></code></pre>
+                <button class="copy" type="button" data-copy="#snippet-desktop">
+                  <span aria-hidden="true">Copy</span>
+                  <span class="sr-only">Copy the endpoint for Claude Desktop</span>
+                </button>
+              </div>
               <p class="panel__note">
-                Add to <code>claude_desktop_config.json</code>, then restart the app.
+                There is nothing else to fill in: the endpoint is unauthenticated, so the connector
+                asks for no client id and no secret.
               </p>
             </div>
 
             <div class="panel" role="tabpanel" id="p-play" aria-labelledby="t-play" hidden>
               <p class="panel__lede">
                 Cloudflare's AI Playground is a hosted MCP client. Paste the endpoint, connect, and
-                the five tools appear.
+                the six tools appear.
               </p>
-              <pre class="code" data-copyable><code id="snippet-play"></code></pre>
+              <div class="codeblock">
+                <pre class="code"><code id="snippet-play"></code></pre>
+                <button class="copy" type="button" data-copy="#snippet-play">
+                  <span aria-hidden="true">Copy</span>
+                  <span class="sr-only">Copy the endpoint for the AI Playground</span>
+                </button>
+              </div>
               <p class="panel__note">
                 <a id="playground-link" href="https://playground.ai.cloudflare.com/"
                   >Open the AI Playground →</a
@@ -224,7 +258,13 @@
             </div>
 
             <div class="panel" role="tabpanel" id="p-insp" aria-labelledby="t-insp" hidden>
-              <pre class="code" data-copyable><code id="snippet-insp"></code></pre>
+              <div class="codeblock">
+                <pre class="code"><code id="snippet-insp"></code></pre>
+                <button class="copy" type="button" data-copy="#snippet-insp">
+                  <span aria-hidden="true">Copy</span>
+                  <span class="sr-only">Copy the Inspector command</span>
+                </button>
+              </div>
               <p class="panel__note">
                 Set transport to Streamable HTTP and connect to the endpoint above.
               </p>
@@ -237,19 +277,19 @@
         <header class="section-head">
           <h2>Where the answers come from</h2>
           <p>
-            Two sources, split by how fast they change. Nothing is inferred, and nothing is
+            Four sources, split by how fast they change. Nothing is inferred, and nothing is
             remembered from training.
           </p>
         </header>
 
         <div class="sources">
           <article class="source">
-            <p class="source__tag" data-src="live">Fetched per request</p>
+            <p class="source__tag" data-src="live">Fetched per request · cached 1 h</p>
             <h3>webstatus.dev</h3>
             <p>
               Baseline status, the browser versions a feature shipped in, Web Platform Tests scores
-              and usage share. Cached at the edge for an hour, so the answer is never more than an
-              hour behind the dashboard.
+              and usage share. Behind <code>search_css_features</code>, <code>whats_new</code> and
+              <code>get_feature</code>, and never more than an hour behind the dashboard.
             </p>
           </article>
 
@@ -258,21 +298,34 @@
             <h3>browser-compat-data</h3>
             <p>
               The CSS slice of MDN's compat dataset, plus the <code>web-features</code> catalog that
-              maps compat keys to Baseline features. Twenty megabytes upstream, compacted to
-              <span id="data-size">about 120 KB</span> at build time — so support lookups and audits
-              answer with no network call at all.
+              maps compat keys to Baseline features. Twenty megabytes upstream, reduced at build
+              time to about 1 MB of JSON — 120 KB over the wire — so
+              <code>check_support</code> and <code>audit_css</code> answer with no network call at
+              all.
             </p>
             <p class="source__meta" id="data-versions">Loading version info…</p>
           </article>
 
           <article class="source">
-            <p class="source__tag" data-src="live">Fetched per request</p>
+            <p class="source__tag" data-src="live">Fetched per request · cached 24 h</p>
             <h3>mdn/content</h3>
             <p>
-              Reference prose, read from the Markdown source. The canonical slug is resolved through
-              MDN first, because compat data records the URL a page had when the entry was written
-              and MDN reorganises.
+              Reference prose for <code>get_feature</code>, read from the Markdown source. The
+              canonical slug is resolved through MDN first, because compat data records the URL a
+              page had when the entry was written and MDN reorganises.
             </p>
+          </article>
+
+          <article class="source">
+            <p class="source__tag" data-src="bundled">Compiled into the Worker</p>
+            <h3>UX guidelines</h3>
+            <p>
+              The one source here that is written rather than fetched: 37 principles behind
+              <code>dont_make_me_think</code>, drawn from Nielsen's heuristics, Hick's and Fitts's
+              laws, WCAG 2.2, neurodiversity research and motion practice — each with the rule, why
+              it holds, and what breaking it looks like in markup.
+            </p>
+            <p class="source__meta">guidelines v1.0.0 · 37 principles · 9 topics</p>
           </article>
         </div>
       </section>
@@ -295,6 +348,10 @@
         page used to have: dark is worth it in specific niches, and documentation is not one.
       </p>
     </footer>
+
+    <!-- Copy buttons swap their own label, which a screen reader will not
+         announce on its own. This is where the confirmation is spoken. -->
+    <p class="sr-only" role="status" id="copy-status"></p>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

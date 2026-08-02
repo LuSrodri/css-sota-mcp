@@ -60,22 +60,23 @@ exactly the failure mode the server exists to fix. The tool says so rather than 
 ## Connect
 
 ```bash
-claude mcp add --transport http css-sota https://css-sota-mcp.lusrodri.workers.dev/mcp
+claude mcp add --scope user --transport http css-sota https://css-sota-mcp.lusrodri.workers.dev/mcp
 ```
+
+`--scope user` registers it once for every project on the machine. Leave it out and the server is
+added to the current project only.
 
 <details>
 <summary>Claude Desktop</summary>
 
-```json
-{
-  "mcpServers": {
-    "css-sota": {
-      "type": "http",
-      "url": "https://css-sota-mcp.lusrodri.workers.dev/mcp"
-    }
-  }
-}
+Remote servers go in through Connectors, not through `claude_desktop_config.json` — that file only
+takes local stdio servers. Open **Settings → Connectors → Add custom connector** and paste:
+
 ```
+https://css-sota-mcp.lusrodri.workers.dev/mcp
+```
+
+The endpoint is unauthenticated, so the connector asks for no client id and no secret.
 
 </details>
 
@@ -83,7 +84,7 @@ claude mcp add --transport http css-sota https://css-sota-mcp.lusrodri.workers.d
 <summary>Cloudflare AI Playground</summary>
 
 Open [playground.ai.cloudflare.com](https://playground.ai.cloudflare.com/), paste the endpoint into
-the MCP server field, and connect. The five tools appear immediately.
+the MCP server field, and connect. The six tools appear immediately.
 
 </details>
 

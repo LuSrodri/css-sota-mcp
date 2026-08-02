@@ -61,13 +61,16 @@ function escapeHtml(value: string): string {
 function fillSnippets(): void {
   el<HTMLInputElement>('#endpoint-url').value = MCP_ENDPOINT;
 
-  el('#snippet-cc').textContent = `claude mcp add --transport http css-sota ${MCP_ENDPOINT}`;
+  // `--scope user` is the point of the line. Without it `claude mcp add`
+  // defaults to local scope, which registers the server in whichever project
+  // the terminal happened to be in — so the reader copies the command, it
+  // works, and then the tools are missing from the next repo they open.
+  el('#snippet-cc').textContent =
+    `claude mcp add --scope user --transport http css-sota ${MCP_ENDPOINT}`;
 
-  el('#snippet-json').textContent = JSON.stringify(
-    { mcpServers: { 'css-sota': { type: 'http', url: MCP_ENDPOINT } } },
-    null,
-    2,
-  );
+  // Claude Desktop's config file takes local stdio servers only; a remote one
+  // is added through Settings -> Connectors, which wants the bare URL.
+  el('#snippet-desktop').textContent = MCP_ENDPOINT;
 
   el('#snippet-play').textContent = MCP_ENDPOINT;
   el('#snippet-insp').textContent = `npx @modelcontextprotocol/inspector@latest`;
@@ -75,24 +78,63 @@ function fillSnippets(): void {
 
 /* ---------- Copy buttons ---------- */
 
-async function copy(text: string, button: HTMLButtonElement): Promise<void> {
-  const original = button.textContent;
-  try {
-    await navigator.clipboard.writeText(text);
-    button.textContent = 'Copied';
-  } catch {
-    button.textContent = 'Press ⌘C';
+/** Spoken confirmation. The button's own label change is not announced. */
+function announce(text: string): void {
+  const status = document.getElementById('copy-status');
+  if (status) status.textContent = text;
+}
+
+/** Reads what a copy target holds, whether it is a field or a code block. */
+function textOf(node: Element): string {
+  return node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement
+    ? node.value
+    : (node.textContent ?? '');
+}
+
+/**
+ * Falls back to selecting the text when the clipboard is unavailable — over
+ * plain HTTP, or with the permission denied. Selecting it leaves the reader one
+ * keystroke away instead of one retype away, and the shortcut is not named
+ * because it differs per platform.
+ */
+function selectText(node: Element): void {
+  if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
+    node.select();
+    return;
   }
+  const range = document.createRange();
+  range.selectNodeContents(node);
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+}
+
+async function copy(target: Element, button: HTMLButtonElement): Promise<void> {
+  const label = button.querySelector('[aria-hidden="true"]') ?? button;
+  const original = label.textContent;
+
+  try {
+    await navigator.clipboard.writeText(textOf(target));
+    label.textContent = 'Copied';
+    button.dataset.state = 'done';
+    announce('Copied to clipboard.');
+  } catch {
+    selectText(target);
+    label.textContent = 'Select';
+    announce('The clipboard is unavailable. The text is selected — copy it with your keyboard.');
+  }
+
   setTimeout(() => {
-    button.textContent = original;
+    label.textContent = original;
+    delete button.dataset.state;
   }, 1600);
 }
 
 function wireCopyButtons(): void {
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
     button.addEventListener('click', () => {
-      const target = document.querySelector<HTMLInputElement>(button.dataset.copy!);
-      if (target) void copy(target.value, button);
+      const target = document.querySelector(button.dataset.copy!);
+      if (target) void copy(target, button);
     });
   }
 }
