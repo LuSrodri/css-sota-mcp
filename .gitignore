@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+*.log
+npm-debug.log*
+.DS_Store
+.probe/
+
+# Generated at build time from @mdn/browser-compat-data + web-features.
+# Run `npm run build:data --workspace mcp` to (re)create.
+mcp/src/data/generated/
