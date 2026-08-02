@@ -7,6 +7,23 @@
   "observability": {
     "enabled": true
   },
+  "ratelimits": [
+    {
+      "name": "MCP_RATE_LIMITER",
+      "namespace_id": "1001",
+      // 120 requests per minute per client IP, per Cloudflare location.
+      //
+      // Sized against real usage rather than a round number: an agent working
+      // through a task calls a handful of tools per turn, so single-digit
+      // requests per minute is typical and a burst of twenty is unremarkable.
+      // 120 leaves room for a shared NAT address running several such clients
+      // while still stopping a script in a loop.
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    }
+  ],
   "vars": {
     "SERVER_VERSION": "0.1.0"
   }
