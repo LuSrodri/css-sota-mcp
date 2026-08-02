@@ -30,3 +30,37 @@ jobs:
       - run: npm run build --workspace mcp
 
       - run: npm run build --workspace landing
+
+      # Unit tests exercise the tools as functions; they say nothing about
+      # whether the Worker actually speaks MCP. Boot the real thing on workerd
+      # and talk to it over Streamable HTTP, the same flow the AI Playground
+      # and MCP Inspector use.
+      #
+      # --offline skips the three tools that call api.webstatus.dev and
+      # mdn/content, so a third-party outage cannot fail a pull request that
+      # had nothing to do with it. verify.yml covers those against production.
+      - name: Start the Worker
+        working-directory: mcp
+        run: |
+          npx wrangler dev --port 8787 --ip 127.0.0.1 > /tmp/wrangler.log 2>&1 &
+          echo "$!" > /tmp/wrangler.pid
+
+      - name: Wait for the Worker to answer
+        run: |
+          for i in $(seq 1 45); do
+            if curl -sf http://127.0.0.1:8787/health > /dev/null; then
+              echo "ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Worker did not come up:"
+          cat /tmp/wrangler.log
+          exit 1
+
+      - name: MCP protocol smoke test
+        run: node mcp/scripts/smoke.js http://127.0.0.1:8787/mcp --offline
+
+      - name: Stop the Worker
+        if: always()
+        run: kill "$(cat /tmp/wrangler.pid)" 2>/dev/null || true
