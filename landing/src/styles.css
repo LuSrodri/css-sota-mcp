@@ -108,6 +108,19 @@ textarea {
   font-family: var(--font-mono);
 }
 
+/* Off screen but still in the accessibility tree — for labels a sighted reader
+   gets from position and a screen reader cannot. */
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .skip {
   position: absolute;
   inset-inline-start: -999px;
@@ -617,9 +630,19 @@ textarea {
   color: var(--ink-soft);
 }
 
+/* The button is a sibling of the <pre>, not a child of it: the <pre> scrolls
+   horizontally, and anything positioned inside would slide out of reach with
+   the first long line. */
+.codeblock {
+  position: relative;
+}
+
 .code {
   margin: 0;
   padding: 1.1rem 1.2rem;
+  /* Room for the button, so a long command runs under it rather than behind
+     it. Matched to the button's own width plus the gap it sits in. */
+  padding-inline-end: 6rem;
   overflow-x: auto;
   background: var(--sunk);
   border: 1px solid var(--rule);
@@ -627,6 +650,37 @@ textarea {
   font-size: 0.85rem;
   line-height: 1.6;
   tab-size: 2;
+}
+
+.copy {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-end: 0.6rem;
+  min-inline-size: 4.75rem;
+  padding: 0.42rem 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.copy:hover {
+  color: var(--accent-deep);
+  border-color: var(--accent);
+}
+
+/* Confirmation is the same green the server uses for "widely available", so a
+   colour on this page never means two things. */
+.copy[data-state='done'] {
+  color: var(--widely);
+  border-color: var(--widely);
 }
 
 .panel__note {
@@ -642,9 +696,11 @@ textarea {
   gap: 1.5rem;
 }
 
-@media (min-width: 56rem) {
+/* Two by two rather than four across: these cards are paragraphs, and a quarter
+   of the shell is too narrow a measure to read one in. */
+@media (min-width: 48rem) {
   .sources {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
