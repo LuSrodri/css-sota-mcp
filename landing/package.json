@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "audit:styles": "node scripts/audit-styles.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "deploy": "npm run build && wrangler pages deploy dist --project-name css-sota-mcp --branch main"
   },
