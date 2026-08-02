@@ -1,0 +1,52 @@
+name: Publish to MCP Registry
+
+# The registry stores metadata, not code — it points clients at the Worker
+# Cloudflare already deploys from main. So this does not run on every push:
+# a redeploy that changes no metadata needs no new registry version. It runs
+# on a version tag, which is the only moment the published record is stale.
+#
+# No secrets. OIDC proves the job runs in LuSrodri/css-sota-mcp, which is what
+# grants the io.github.LuSrodri/* namespace — the same claim the device-flow
+# login makes by hand, without a token to leak.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish server.json
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # OIDC
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      # The tag is the source of truth for the version, so server.json's own
+      # value never has to be kept in sync by hand. A workflow_dispatch run has
+      # no tag and republishes whatever is committed.
+      - name: Take the version from the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version="${GITHUB_REF#refs/tags/v}"
+          jq --arg v "$version" '.version = $v' server.json > server.tmp
+          mv server.tmp server.json
+          echo "publishing version $version"
+
+      # Fails on a schema error before authenticating, so a bad edit surfaces
+      # as a validation message rather than a half-finished publish.
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Authenticate
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish
