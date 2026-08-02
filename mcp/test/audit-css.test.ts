@@ -126,6 +126,49 @@ describe('audit_css', () => {
     expect(result.content[0]!.text).toMatch(/No recognisable CSS features/);
   });
 
+  // Baseline is a property of a whole feature, so a coarse feature drags
+  // specific declarations down with it. The finding has to say which browsers
+  // are actually missing the key, or the only sane reading is "delete it".
+  describe('Baseline findings name the gap for the specific key', () => {
+    it('names the browsers missing that key when there are any', async () => {
+      const result = await audit('a { cursor: pointer; }', 'baseline-widely');
+      const finding = result.structuredContent.findings.find(
+        (item) => item.key === 'css.properties.cursor.pointer',
+      );
+
+      expect(finding?.status).toBe('fail');
+      // The feature's own status, plus the per-key gap.
+      expect(finding?.reasons).toHaveLength(2);
+      expect(finding?.reasons[1]).toMatch(/css\.properties\.cursor\.pointer/);
+      expect(finding?.reasons[1]).toMatch(/Safari iOS/);
+    });
+
+    it('says so when the key itself is supported everywhere', async () => {
+      // anchor-name ships in all seven Baseline browsers; "Anchor positioning"
+      // is Limited because of other parts of the feature.
+      const result = await audit('a { anchor-name: --x; }', 'baseline-widely');
+      const finding = result.structuredContent.findings.find(
+        (item) => item.key === 'css.properties.anchor-name',
+      );
+
+      expect(finding?.status).toBe('fail');
+      expect(finding?.reasons[1]).toMatch(/supported in every Baseline browser/);
+    });
+
+    // The key shipping everywhere does not make the code correct — anchor-name
+    // is inert without the parts of anchor positioning that are not
+    // interoperable. Promising otherwise would be worse than the coarse status.
+    it('does not tell the reader a supported key is safe to keep', async () => {
+      const result = await audit('a { anchor-name: --x; }', 'baseline-widely');
+      const finding = result.structuredContent.findings.find(
+        (item) => item.key === 'css.properties.anchor-name',
+      );
+
+      expect(finding?.reasons.join(' ')).not.toMatch(/fine to keep|safe to (keep|use)/i);
+      expect(finding?.reasons[1]).toMatch(/Check whether your usage depends/);
+    });
+  });
+
   it('treats a Baseline newly target as looser than widely', async () => {
     const source = '.a { anchor-name: --tip; }';
     const widely = await audit(source, 'baseline-widely');

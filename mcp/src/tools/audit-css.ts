@@ -44,7 +44,15 @@ export const config = {
     'target. Targets are either a Baseline level ("baseline-widely", "baseline-newly") or an ' +
     'explicit browser list ("chrome 120, safari 17.4, firefox 128"). Reports the offending ' +
     'line, what is wrong (unsupported, too old, prefix-only, partial), and the minimum ' +
-    'version that would work. Browserslist queries like "last 2 versions" are not supported.',
+    'version that would work. Browserslist queries like "last 2 versions" are not supported. ' +
+    'IMPORTANT when reading Baseline-level results: Baseline describes a whole feature, and a ' +
+    'feature can be "Limited" because one part of it is not interoperable while the exact ' +
+    'declaration you wrote works everywhere. "Cursor styles" is Limited, so `cursor: pointer` ' +
+    'is reported — yet it only lacks iOS Safari, where a cursor is meaningless rather than ' +
+    'broken. Each finding therefore also names the browsers missing that specific key, or says ' +
+    'that the key ships everywhere and the status comes from elsewhere in the feature. Read ' +
+    'that line before removing anything: a key that ships everywhere is still not proof the ' +
+    'code works, since it may be inert without the parts that do not.',
   inputSchema: z.object({
     source: z
       .string()
@@ -240,12 +248,35 @@ function judgeBaseline(candidate: Candidate, entry: BcdEntry, level: 'newly' | '
 
   const meets = level === 'widely' ? feature.s === 'widely' : feature.s === 'widely' || feature.s === 'newly';
 
-  return {
-    ...base,
-    status: meets ? 'pass' : 'fail',
-    baseline: feature.s,
-    reasons: meets ? [] : [`${feature.n} is ${baselineLabel(feature.s, feature.l, feature.h)}`],
-  };
+  if (meets) {
+    return { ...base, status: 'pass', baseline: feature.s, reasons: [] };
+  }
+
+  // A Baseline status describes the whole feature, and features are coarse:
+  // "Cursor styles" covers 39 compat keys, so `cursor: pointer` inherits
+  // Limited from whichever of them is not interoperable. Reporting only the
+  // feature's status invites the reader to delete a declaration that has worked
+  // everywhere for twenty years, so the gap for *this* key is spelled out too.
+  const support = decodeEntry(entry);
+  const missing = BASELINE_BROWSERS.filter((browser) => support[browser].since === null);
+
+  const reasons = [`${feature.n} is ${baselineLabel(feature.s, feature.l, feature.h)}`];
+  reasons.push(
+    missing.length > 0
+      ? `\`${candidate.key}\` specifically is unsupported in ${missing
+          .map((browser) => BROWSER_LABELS[browser])
+          .join(', ')}`
+      : // Deliberately not "safe to keep". The key shipping everywhere does not
+        // mean the code is fine: `anchor-name` is in every Baseline browser, but
+        // it is inert without the parts of anchor positioning that are not, so a
+        // blanket reassurance here would be worse than the coarse status it is
+        // trying to correct. State the fact and name the question instead.
+        `\`${candidate.key}\` specifically is supported in every Baseline browser; the ` +
+        `feature's status comes from other parts of it. Check whether your usage depends ` +
+        `on those`,
+  );
+
+  return { ...base, status: 'fail', baseline: feature.s, reasons };
 }
 
 /** Renders one failing or unknown finding. */
