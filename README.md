@@ -158,6 +158,27 @@ The Worker's build command is **not** optional: `mcp/src/data/generated/` is git
 Because the two are independent products, neither waits for the other. `.github/workflows/verify.yml`
 covers that gap — it smoke-tests the live endpoint on a schedule and on demand.
 
+#### Previewing a pull request
+
+Every push to a PR branch uploads a Worker version and builds the landing site, each reachable
+before merge:
+
+| | URL |
+| --- | --- |
+| Worker | `https://<version-prefix>-css-sota-mcp.lusrodri.workers.dev/mcp` |
+| Landing | `https://<deployment-id>.css-sota-mcp.pages.dev` |
+
+The version prefix is in the Workers Builds log, or under **Deployments** on the Worker. Point the
+[AI Playground](https://playground.ai.cloudflare.com/) or MCP Inspector at the Worker URL to try a
+PR's server for real.
+
+Two things this does *not* do. There is no stable per-branch alias and no automatic PR comment —
+those need the Workers Builds preview feature, which this account cannot enable
+(`12044: This account does not have access to Workers Previews`). And a landing preview always
+calls **production**, since `VITE_MCP_ORIGIN` falls back to it: a PR touching both halves will show
+a new front end against the old server. Set `VITE_MCP_ORIGIN` on the preview build to that PR's
+Worker version if that matters for a given change.
+
 To deploy by hand instead:
 
 ```bash
