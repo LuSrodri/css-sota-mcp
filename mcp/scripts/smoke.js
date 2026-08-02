@@ -111,10 +111,15 @@ async function main() {
   const names = tools.map((tool) => tool.name).sort();
   console.log(`        tools: ${names.join(', ')}`);
   record(
-    'tools/list returns all five tools',
-    ['audit_css', 'check_support', 'get_feature', 'search_css_features', 'whats_new'].every((n) =>
-      names.includes(n),
-    ),
+    'tools/list returns every tool',
+    [
+      'audit_css',
+      'check_support',
+      'dont_make_me_think',
+      'get_feature',
+      'search_css_features',
+      'whats_new',
+    ].every((n) => names.includes(n)),
   );
   record(
     'every tool declares an input and output schema',
@@ -167,6 +172,17 @@ async function main() {
     });
     record('whats_new returns a window of features', news.structuredContent?.count >= 0);
   }
+
+  const ux = await rpc('tools/call', {
+    name: 'dont_make_me_think',
+    arguments: { mode: 'review', html: '<img src="a.png">' },
+  });
+  record(
+    'dont_make_me_think flags a missing alt and cites the principle',
+    ux.structuredContent?.counts?.blocker > 0 &&
+      ux.structuredContent.findings[0]?.principleId === 'wcag-perceivable-text-alternatives',
+    JSON.stringify(ux.structuredContent).slice(0, 300),
+  );
 
   const bad = await rpc('tools/call', {
     name: 'check_support',

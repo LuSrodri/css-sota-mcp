@@ -10,6 +10,7 @@ import { McpServer } from '@modelcontextprotocol/server';
 import { dataMeta } from './data/index.js';
 import * as auditCss from './tools/audit-css.js';
 import * as checkSupport from './tools/check-support.js';
+import * as dontMakeMeThink from './tools/dont-make-me-think.js';
 import * as getFeature from './tools/get-feature.js';
 import * as searchCssFeatures from './tools/search-css-features.js';
 import * as whatsNew from './tools/whats-new.js';
@@ -27,6 +28,7 @@ Pick a tool by the question:
 - Everything about one feature -> get_feature
 - Which browser versions support one property/value/selector? -> check_support
 - Does this stylesheet work for my users? -> audit_css
+- How should this UI be designed, or is this page any good? -> dont_make_me_think
 
 Baseline levels: "widely" means interoperable across Chrome, Edge, Firefox and Safari
 (desktop and mobile) for 30+ months; "newly" means interoperable but recently so;
@@ -49,6 +51,7 @@ const TOOLS: ToolModule[] = [
   getFeature as unknown as ToolModule,
   checkSupport as unknown as ToolModule,
   auditCss as unknown as ToolModule,
+  dontMakeMeThink as unknown as ToolModule,
 ];
 
 /**
