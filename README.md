@@ -174,15 +174,19 @@ The branch alias is the useful one — it stays put as you push. A branch named
 [AI Playground](https://playground.ai.cloudflare.com/) or MCP Inspector at it to try a PR's server
 for real; `node mcp/scripts/smoke.js <url>/mcp` works against it too.
 
-Two caveats:
+A landing preview calls **its own branch's Worker**, not production. `landing/vite.config.ts`
+derives the alias from `CF_PAGES_BRANCH` at build time, so a PR touching both halves is previewed
+as a matched pair. Without this the preview would show a new front end against the old server —
+green preview, broken on merge. An explicit `VITE_MCP_ORIGIN` still wins, and production builds
+fall through to the default.
 
-- **No automatic PR comment.** Cloudflare normally posts the preview links on the pull request;
-  this account cannot enable that (`12044: This account does not have access to Workers
-  Previews`). The URLs themselves work — you just construct them from the branch name.
-- **A landing preview always calls production**, since `VITE_MCP_ORIGIN` falls back to it. A PR
-  touching both halves will show a new front end against the old server: green preview, broken on
-  merge. Set `VITE_MCP_ORIGIN` on the preview build to that PR's Worker alias when a change needs
-  them to line up.
+The alias is derived rather than looked up, so a mismatch points the demo at a URL that 404s. That
+fails visibly: the endpoint is printed on the page and the hero reports it could not reach the
+server. The Pages build log prints the wiring on every preview build.
+
+One caveat remains: **no automatic PR comment.** Cloudflare normally posts the preview links on the
+pull request; this account cannot enable that (`12044: This account does not have access to Workers
+Previews`). The URLs work — you construct them from the branch name.
 
 To deploy by hand instead:
 
