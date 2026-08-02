@@ -1,0 +1,40 @@
+name: Verify production
+
+# Deploying is Cloudflare's job: Workers Builds and Pages both build from this
+# repo on push. This workflow does the part they cannot — check that what is
+# live actually answers.
+#
+# It runs on a schedule as well as on demand, because three of the five tools
+# call upstreams that change without warning. Both have already broken once
+# during development: web-features renamed its Baseline values, and MDN moved
+# its whole CSS reference. A daily run turns the next such change into a red
+# check instead of a user-visible wrong answer.
+#
+# No credentials: the endpoint is public and the check is read-only.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 06:00 UTC daily, after webstatus.dev's own refresh window.
+    - cron: '0 6 * * *'
+
+jobs:
+  smoke:
+    name: Smoke test the live endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # smoke.js speaks plain fetch and needs nothing installed.
+      - name: Smoke test
+        run: node mcp/scripts/smoke.js https://css-sota-mcp.lusrodri.workers.dev/mcp
+
+      - name: Check the landing site is served
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' https://css-sota-mcp.pages.dev/)
+          echo "css-sota-mcp.pages.dev -> $status"
+          test "$status" = "200"

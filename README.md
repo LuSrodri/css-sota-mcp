@@ -121,16 +121,19 @@ Inspector use — so a passing run means those clients will work too.
 
 ### Deploy
 
-Pushing to `main` deploys both, via `.github/workflows/deploy.yml`. The Worker goes out first
-and is smoke-tested against its live URL before the landing site follows, since the page's hero
-demo calls the Worker.
+Pushing to `main` deploys both. Cloudflare builds from this repo directly — no API token is
+stored in GitHub, and Cloudflare issues its own build credential.
 
-Two repository secrets are required:
+| Target | Product | Root | Build | Deploy |
+| --- | --- | --- | --- | --- |
+| Worker | Workers Builds | `mcp` | `npm run build:data` | `npx wrangler deploy` |
+| Landing | Pages Git integration | `landing` | `npm run build` | output `dist` |
 
-| Secret | Value |
-| --- | --- |
-| `CLOUDFLARE_API_TOKEN` | Token with **Workers Scripts: Edit** and **Cloudflare Pages: Edit** |
-| `CLOUDFLARE_ACCOUNT_ID` | The account id |
+The Worker's build command is **not** optional: `mcp/src/data/generated/` is gitignored, and
+`src/data/index.ts` imports it statically, so a build that skips it fails to bundle.
+
+Because the two are independent products, neither waits for the other. `.github/workflows/verify.yml`
+covers that gap — it smoke-tests the live endpoint on a schedule and on demand.
 
 To deploy by hand instead:
 
@@ -139,17 +142,21 @@ npm run deploy --workspace mcp      # Worker
 npm run deploy --workspace landing  # Pages
 ```
 
-Both need Cloudflare credentials — either `wrangler login`, or the same two environment variables.
+Both need Cloudflare credentials — either `wrangler login`, or `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` in the environment. Note that `wrangler login` needs a real terminal; in a
+non-interactive shell it refuses and asks for the token variable instead.
 
 #### Account prerequisites
 
-Cloudflare gates Workers behind these, and the errors are only visible at deploy time:
+Cloudflare gates Workers behind these, and the errors only surface at deploy time:
 
-- **A verified account email.** Without it every Workers API call fails with
-  `10034: You need to verify your email address to use Workers`, and Pages project creation fails
-  with `8000077`. This blocks every deploy method equally — Wrangler, CI and dashboard alike.
+- **Workers enabled on the account.** Until the Workers & Pages dashboard has been opened once,
+  every Workers API call fails with `10034: You need to verify your email address to use Workers` —
+  which is misleading, since a verified email does not clear it. Opening the page does.
 - **A `workers.dev` subdomain**, if you want a `*.workers.dev` URL. Absent one, the API answers
   `10007`.
+- **The Cloudflare GitHub App installed**, for Git-based deploys. Without it the repository
+  connection API answers `8000008`, regardless of account permissions.
 
 ## Built with
 
