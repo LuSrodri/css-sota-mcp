@@ -112,8 +112,33 @@ function resolveKey(args: Args): string | undefined {
   );
 }
 
-const EMPTY_STRUCTURED = {
-  resolved: false as const,
+/** Per-browser support, as reported in `structuredContent`. */
+interface SupportReport {
+  since: string | null;
+  prefix: string | null;
+  alternativeName: string | null;
+  partial: boolean;
+  removedIn: string | null;
+}
+
+/**
+ * The structured half of a failed lookup.
+ *
+ * Typed rather than inferred so that `support` stays a record here and in the
+ * success path; otherwise it narrows to `{}` and callers cannot index it.
+ */
+const EMPTY_STRUCTURED: {
+  resolved: boolean;
+  key: string | null;
+  featureId: string | null;
+  baseline: string | null;
+  deprecated: boolean;
+  experimental: boolean;
+  support: Record<string, SupportReport>;
+  mdnUrl: string | null;
+  spec: string | null;
+} = {
+  resolved: false,
   key: null,
   featureId: null,
   baseline: null,
@@ -159,7 +184,7 @@ export async function handler(args: Args) {
     ? [...BROWSERS]
     : ['chrome', 'chrome_android', 'edge', 'firefox', 'firefox_android', 'safari', 'safari_ios'];
 
-  const structuredSupport: Record<string, unknown> = {};
+  const structuredSupport: Record<string, SupportReport> = {};
   for (const browser of browsers) {
     const value = support[browser];
     structuredSupport[browser] = {

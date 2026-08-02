@@ -34,12 +34,19 @@ export const config = {
           '"newly" (interoperable across all major engines recently), or "limited" (not yet ' +
           'available across all major engines).',
       ),
+    // The dashboard's date term filters on the Newly date only; there is no
+    // term for the Widely transition. `whats_new` is the tool for that.
     since: dateSchema
       .optional()
-      .describe('Only features that reached Baseline on or after this date (YYYY-MM-DD).'),
+      .describe(
+        'Only features that became Baseline Newly available on or after this date (YYYY-MM-DD). ' +
+          'Combined with `baseline`, this means "went Newly in this range AND is status X today".',
+      ),
     until: dateSchema
       .optional()
-      .describe('Only features that reached Baseline on or before this date (YYYY-MM-DD).'),
+      .describe(
+        'Only features that became Baseline Newly available on or before this date (YYYY-MM-DD).',
+      ),
     limit: z
       .int()
       .min(1)

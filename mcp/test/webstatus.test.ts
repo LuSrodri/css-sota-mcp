@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildQuery, quoteQueryValue } from '../src/webstatus.js';
-import { baselineDateTerm, baselineDateOf, toIsoDate } from '../src/tools/shared.js';
+import { baselineDateTerm, baselineDateOf, shiftMonths, toIsoDate } from '../src/tools/shared.js';
 
 describe('quoteQueryValue', () => {
   it('leaves a bare identifier unquoted', () => {
@@ -53,6 +53,27 @@ describe('baselineDateTerm', () => {
     expect(baselineDateTerm('2025-01-01', '2026-01-01')).toBe(
       'baseline_date:2025-01-01..2026-01-01',
     );
+  });
+});
+
+describe('shiftMonths', () => {
+  it('shifts backwards across a year boundary', () => {
+    expect(shiftMonths('2026-01-15', -30)).toBe('2023-07-15');
+  });
+
+  it('shifts forwards', () => {
+    expect(shiftMonths('2023-07-15', 30)).toBe('2026-01-15');
+  });
+
+  it('is a no-op for zero', () => {
+    expect(shiftMonths('2026-01-15', 0)).toBe('2026-01-15');
+  });
+
+  it('rolls a day that does not exist in the target month into the next one', () => {
+    // 2026-01-31 minus one month has no 31st; Date normalises to 2026-03-03.
+    // The Widely window is padded by six months either side precisely so this
+    // kind of drift cannot lose a result.
+    expect(shiftMonths('2026-03-31', -1)).toBe('2026-03-03');
   });
 });
 

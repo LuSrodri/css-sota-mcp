@@ -53,6 +53,13 @@ export function daysAgo(days: number): string {
   return toIsoDate(date);
 }
 
+/** Shifts a `YYYY-MM-DD` date by a number of months, in UTC. */
+export function shiftMonths(date: string, months: number): string {
+  const parsed = new Date(`${date}T00:00:00Z`);
+  parsed.setUTCMonth(parsed.getUTCMonth() + months);
+  return toIsoDate(parsed);
+}
+
 /**
  * Builds a `baseline_date:from..to` term.
  *
