@@ -10,7 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name css-sota-mcp"
+    "deploy": "npm run build && wrangler pages deploy dist --project-name css-sota-mcp --branch main"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

@@ -121,10 +121,35 @@ Inspector use — so a passing run means those clients will work too.
 
 ### Deploy
 
+Pushing to `main` deploys both, via `.github/workflows/deploy.yml`. The Worker goes out first
+and is smoke-tested against its live URL before the landing site follows, since the page's hero
+demo calls the Worker.
+
+Two repository secrets are required:
+
+| Secret | Value |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Token with **Workers Scripts: Edit** and **Cloudflare Pages: Edit** |
+| `CLOUDFLARE_ACCOUNT_ID` | The account id |
+
+To deploy by hand instead:
+
 ```bash
 npm run deploy --workspace mcp      # Worker
 npm run deploy --workspace landing  # Pages
 ```
+
+Both need Cloudflare credentials — either `wrangler login`, or the same two environment variables.
+
+#### Account prerequisites
+
+Cloudflare gates Workers behind these, and the errors are only visible at deploy time:
+
+- **A verified account email.** Without it every Workers API call fails with
+  `10034: You need to verify your email address to use Workers`, and Pages project creation fails
+  with `8000077`. This blocks every deploy method equally — Wrangler, CI and dashboard alike.
+- **A `workers.dev` subdomain**, if you want a `*.workers.dev` URL. Absent one, the API answers
+  `10007`.
 
 ## Built with
 
