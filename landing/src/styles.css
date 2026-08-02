@@ -11,9 +11,21 @@
  * the first version of this file shipped `text-wrap: pretty`, which is Limited
  * availability — exactly the mistake the server was built to catch, made on the
  * page advertising it.
+ *
+ * Light only, deliberately. `dont_make_me_think` flagged the dark theme this
+ * file used to carry: light-on-dark reduces reading accuracy for most sighted
+ * readers and is actively worse with astigmatism, so dark is warranted in
+ * specific niches — prolonged low-light use, media, code editing — and a docs
+ * page is not one. The tool reports it; this file now obeys it.
  */
 
 :root {
+  /* Light only, stated rather than implied. Without this the page stays light
+     while the browser renders form controls, scrollbars and spellcheck
+     underlines dark for anyone whose OS is set that way — a half-themed page
+     is worse than either theme. */
+  color-scheme: light;
+
   /* Violet is the brand; the other three are the Baseline traffic signal the
      server reports, reused here so a status colour always means one thing. */
   --accent: oklch(0.55 0.22 285);
@@ -42,27 +54,6 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   --shell: min(1180px, 100% - 2.5rem);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: oklch(0.74 0.16 285);
-    --accent-soft: oklch(0.3 0.08 285);
-    --accent-deep: oklch(0.85 0.1 285);
-
-    --widely: oklch(0.75 0.15 155);
-    --newly: oklch(0.79 0.14 80);
-    --limited: oklch(0.7 0.17 25);
-
-    --ink: oklch(0.95 0.008 275);
-    --ink-soft: oklch(0.75 0.02 275);
-    --ink-faint: oklch(0.6 0.02 275);
-
-    --paper: oklch(0.17 0.02 275);
-    --surface: oklch(0.21 0.025 275);
-    --sunk: oklch(0.15 0.02 275);
-    --rule: oklch(0.32 0.025 275);
-  }
 }
 
 *,
@@ -279,10 +270,10 @@ textarea {
 
 .btn--solid {
   background: var(--accent);
-  /* The literal is the fallback; contrast-color() overrides it where supported
-     and picks a readable value against whatever --accent resolves to. That
-     removes the light/dark override this rule used to need, which is the whole
-     point of the function. */
+  /* The literal is the fallback; contrast-color() overrides it where supported.
+     Both resolve to white against this accent — the function earns its place by
+     staying correct if the accent is ever retuned, not by changing the value
+     today. */
   color: oklch(0.99 0 0);
   color: contrast-color(var(--accent));
 }
@@ -290,16 +281,6 @@ textarea {
 .btn--solid:hover {
   background: var(--accent-deep);
   color: contrast-color(var(--accent-deep));
-}
-
-/* Only needed by browsers without contrast-color(); the function handles the
-   dark palette on its own. */
-@supports not (color: contrast-color(black)) {
-  @media (prefers-color-scheme: dark) {
-    .btn--solid {
-      color: oklch(0.16 0.02 275);
-    }
-  }
 }
 
 /* ---------- Live demo (the signature element) ---------- */
@@ -541,10 +522,6 @@ textarea {
   .toolgrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .tool--wide {
-    grid-column: span 2;
-  }
 }
 
 .tool {
@@ -629,14 +606,9 @@ textarea {
 
 .tab[aria-selected='true'] {
   color: oklch(0.99 0 0);
+  color: contrast-color(var(--accent));
   background: var(--accent);
   border-color: var(--accent);
-}
-
-@media (prefers-color-scheme: dark) {
-  .tab[aria-selected='true'] {
-    color: oklch(0.16 0.02 275);
-  }
 }
 
 .panel__lede {

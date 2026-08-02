@@ -228,7 +228,14 @@ export default {
           'MCP server for state-of-the-art CSS: Baseline status, browser support, and CSS audits.',
         endpoint: new URL(MCP_PATH, url.origin).toString(),
         transport: 'streamable-http',
-        tools: ['search_css_features', 'whats_new', 'get_feature', 'check_support', 'audit_css'],
+        tools: [
+          'search_css_features',
+          'whats_new',
+          'get_feature',
+          'check_support',
+          'audit_css',
+          'dont_make_me_think',
+        ],
         docs: 'https://github.com/LuSrodri/css-sota-mcp',
       });
     }
