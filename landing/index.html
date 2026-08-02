@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>css-sota-mcp — know what CSS you can ship</title>
+    <meta
+      name="description"
+      content="An MCP server that answers what CSS you can actually ship today, from live Baseline data and MDN browser-compat-data. Five tools for searching features, checking support, and auditing stylesheets."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="css-sota-mcp" />
+    <meta property="og:description" content="Know what CSS you can actually ship. An MCP server over Baseline and browser-compat-data." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#tools">Skip to tools</a>
+
+    <header class="topbar">
+      <a class="wordmark" href="/">
+        <span class="wordmark__dot" aria-hidden="true"></span>
+        css-sota-mcp
+      </a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="#tools">Tools</a>
+        <a href="#connect">Connect</a>
+        <a href="#data">Data</a>
+        <a href="https://github.com/LuSrodri/css-sota-mcp">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero__lede">
+          <p class="eyebrow">Model Context Protocol server</p>
+          <h1>
+            Know what CSS you<br />
+            can <em>actually</em> ship.
+          </h1>
+          <p class="hero__sub">
+            Your agent guesses at browser support from whatever it read in training. This server
+            gives it the real answer — live Baseline status from webstatus.dev, and MDN
+            browser-compat-data for every property, selector and at-rule.
+          </p>
+
+          <div class="endpoint">
+            <label class="endpoint__label" for="endpoint-url">Streamable HTTP endpoint</label>
+            <div class="endpoint__row">
+              <input id="endpoint-url" class="endpoint__url" readonly value="" />
+              <button class="btn btn--solid" type="button" data-copy="#endpoint-url">
+                Copy
+              </button>
+            </div>
+            <p class="endpoint__note">
+              No key, no account, no rate limit. Read-only.
+            </p>
+          </div>
+        </div>
+
+        <!--
+          The hero is the product running. This panel is a real MCP client: it
+          speaks Streamable HTTP to the deployed Worker and renders whatever
+          audit_css actually returns.
+        -->
+        <div class="demo" id="demo">
+          <div class="demo__chrome">
+            <span class="demo__title">audit_css</span>
+            <span class="demo__status" id="demo-status" role="status">Ready</span>
+          </div>
+
+          <div class="demo__field">
+            <label class="demo__label" for="demo-source">Stylesheet</label>
+            <textarea id="demo-source" class="demo__source" spellcheck="false" rows="7"></textarea>
+          </div>
+
+          <div class="demo__field">
+            <label class="demo__label" for="demo-target">Target</label>
+            <div class="demo__controls">
+              <input
+                id="demo-target"
+                class="demo__target"
+                value="chrome 115, safari 16, firefox 120"
+                spellcheck="false"
+              />
+              <button class="btn btn--solid" type="button" id="demo-run">Run audit</button>
+            </div>
+            <div class="demo__presets" role="group" aria-label="Target presets">
+              <button class="chip" type="button" data-target="baseline-widely">baseline-widely</button>
+              <button class="chip" type="button" data-target="baseline-newly">baseline-newly</button>
+              <button class="chip" type="button" data-target="chrome 115, safari 16, firefox 120">
+                older browsers
+              </button>
+            </div>
+          </div>
+
+          <output class="demo__out" id="demo-out"></output>
+        </div>
+      </section>
+
+      <section class="tools" id="tools">
+        <header class="section-head">
+          <h2>Five tools, five questions</h2>
+          <p>
+            Each one answers something a developer actually asks mid-task. The agent picks by
+            question, not by guessing at names.
+          </p>
+        </header>
+
+        <ul class="toolgrid">
+          <li class="tool">
+            <p class="tool__q">“Which features exist for this, and are they safe yet?”</p>
+            <h3 class="tool__name">search_css_features</h3>
+            <p class="tool__desc">
+              Search every CSS feature by keyword, Baseline status and the date it became
+              interoperable.
+            </p>
+            <p class="tool__src" data-src="live">Live · webstatus.dev</p>
+          </li>
+
+          <li class="tool">
+            <p class="tool__q">“What can I start using that I couldn't before?”</p>
+            <h3 class="tool__name">whats_new</h3>
+            <p class="tool__desc">
+              Everything that reached Baseline in a date window, newest first, grouped by month.
+            </p>
+            <p class="tool__src" data-src="live">Live · webstatus.dev</p>
+          </li>
+
+          <li class="tool">
+            <p class="tool__q">“Tell me everything about this one feature.”</p>
+            <h3 class="tool__name">get_feature</h3>
+            <p class="tool__desc">
+              Baseline dates, shipping versions per browser, spec links, usage share, and the
+              reference prose straight from MDN.
+            </p>
+            <p class="tool__src" data-src="live">Live · webstatus.dev + mdn/content</p>
+          </li>
+
+          <li class="tool">
+            <p class="tool__q">“Which browser versions support this exactly?”</p>
+            <h3 class="tool__name">check_support</h3>
+            <p class="tool__desc">
+              Per-browser versions for any property, value, selector, at-rule or function —
+              including vendor prefixes and partial implementations.
+            </p>
+            <p class="tool__src" data-src="bundled">Bundled · browser-compat-data</p>
+          </li>
+
+          <li class="tool tool--wide">
+            <p class="tool__q">“Does this stylesheet work for my users?”</p>
+            <h3 class="tool__name">audit_css</h3>
+            <p class="tool__desc">
+              Scans real CSS and reports every feature that misses your target, with the line it's
+              on, what's wrong, and the minimum version that would work. Target a Baseline level or
+              an explicit browser list.
+            </p>
+            <p class="tool__src" data-src="bundled">Bundled · browser-compat-data</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="connect" id="connect">
+        <header class="section-head">
+          <h2>Connect it</h2>
+          <p>Any MCP client that speaks Streamable HTTP. Pick yours.</p>
+        </header>
+
+        <div class="tabs">
+          <div class="tabs__list" role="tablist" aria-label="Client">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="p-cc" id="t-cc">
+              Claude Code
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p-json" id="t-json">
+              Claude Desktop
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p-play" id="t-play">
+              AI Playground
+            </button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p-insp" id="t-insp">
+              Inspector
+            </button>
+          </div>
+
+          <div class="tabs__panels">
+            <div class="panel" role="tabpanel" id="p-cc" aria-labelledby="t-cc">
+              <pre class="code" data-copyable><code id="snippet-cc"></code></pre>
+              <p class="panel__note">Then ask: “audit src/styles.css for baseline-widely”.</p>
+            </div>
+
+            <div class="panel" role="tabpanel" id="p-json" aria-labelledby="t-json" hidden>
+              <pre class="code" data-copyable><code id="snippet-json"></code></pre>
+              <p class="panel__note">
+                Add to <code>claude_desktop_config.json</code>, then restart the app.
+              </p>
+            </div>
+
+            <div class="panel" role="tabpanel" id="p-play" aria-labelledby="t-play" hidden>
+              <p class="panel__lede">
+                Cloudflare's AI Playground is a hosted MCP client. Paste the endpoint, connect, and
+                the five tools appear.
+              </p>
+              <pre class="code" data-copyable><code id="snippet-play"></code></pre>
+              <p class="panel__note">
+                <a id="playground-link" href="https://playground.ai.cloudflare.com/"
+                  >Open the AI Playground →</a
+                >
+              </p>
+            </div>
+
+            <div class="panel" role="tabpanel" id="p-insp" aria-labelledby="t-insp" hidden>
+              <pre class="code" data-copyable><code id="snippet-insp"></code></pre>
+              <p class="panel__note">
+                Set transport to Streamable HTTP and connect to the endpoint above.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="data" id="data">
+        <header class="section-head">
+          <h2>Where the answers come from</h2>
+          <p>
+            Two sources, split by how fast they change. Nothing is inferred, and nothing is
+            remembered from training.
+          </p>
+        </header>
+
+        <div class="sources">
+          <article class="source">
+            <p class="source__tag" data-src="live">Fetched per request</p>
+            <h3>webstatus.dev</h3>
+            <p>
+              Baseline status, the browser versions a feature shipped in, Web Platform Tests scores
+              and usage share. Cached at the edge for an hour, so the answer is never more than an
+              hour behind the dashboard.
+            </p>
+          </article>
+
+          <article class="source">
+            <p class="source__tag" data-src="bundled">Compiled into the Worker</p>
+            <h3>browser-compat-data</h3>
+            <p>
+              The CSS slice of MDN's compat dataset, plus the <code>web-features</code> catalog that
+              maps compat keys to Baseline features. Twenty megabytes upstream, compacted to
+              <span id="data-size">about 120 KB</span> at build time — so support lookups and audits
+              answer with no network call at all.
+            </p>
+            <p class="source__meta" id="data-versions">Loading version info…</p>
+          </article>
+
+          <article class="source">
+            <p class="source__tag" data-src="live">Fetched per request</p>
+            <h3>mdn/content</h3>
+            <p>
+              Reference prose, read from the Markdown source. The canonical slug is resolved through
+              MDN first, because compat data records the URL a page had when the entry was written
+              and MDN reorganises.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Built with the MCP TypeScript SDK v2 on Cloudflare Workers.
+        <a href="https://github.com/LuSrodri/css-sota-mcp">Source</a> ·
+        <a href="https://github.com/LuSrodri/css-sota-mcp/blob/main/LICENSE">MIT</a>
+      </p>
+      <p class="footer__wink">
+        This page is styled with <code>oklch()</code>, <code>:has()</code> and container queries —
+        all Baseline newly available. It practises what it reports.
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

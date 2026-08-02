@@ -1,0 +1,23 @@
+{
+  "name": "css-sota-mcp-monorepo",
+  "private": true,
+  "type": "module",
+  "description": "Monorepo for css-sota-mcp: an MCP server answering what CSS you can actually ship today.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "mcp",
+    "landing"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspace mcp",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:mcp": "npm run dev --workspace mcp",
+    "dev:landing": "npm run dev --workspace landing",
+    "deploy:mcp": "npm run deploy --workspace mcp",
+    "deploy:landing": "npm run deploy --workspace landing"
+  }
+}

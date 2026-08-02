@@ -1,0 +1,34 @@
+{
+  "name": "css-sota-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server for state-of-the-art CSS: Baseline status, browser support, and CSS source audits.",
+  "license": "MIT",
+  "scripts": {
+    "build:data": "node scripts/build-data.js",
+    "prebuild": "npm run build:data",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "pretest": "npm run build:data",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "predev": "npm run build:data",
+    "dev": "wrangler dev",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "predeploy": "npm run build:data",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260801.1",
+    "@mdn/browser-compat-data": "^8.0.8",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
+    "web-features": "^3.34.2",
+    "wrangler": "^4.118.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "css-sota-landing",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Documentation and landing page for css-sota-mcp.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name css-sota-mcp"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.2.0",
+    "wrangler": "^4.118.0"
+  }
+}
