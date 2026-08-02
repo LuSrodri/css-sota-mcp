@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.LuSrodri/css-sota-mcp",
+  "title": "CSS SOTA",
+  "description": "What CSS you can actually ship today, from live Baseline data and MDN browser-compat-data.",
+  "version": "0.1.0",
+  "websiteUrl": "https://css-sota-mcp.pages.dev",
+  "repository": {
+    "url": "https://github.com/LuSrodri/css-sota-mcp",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://css-sota-mcp.lusrodri.workers.dev/mcp"
+    }
+  ]
+}
