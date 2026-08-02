@@ -77,6 +77,29 @@ Set transport to Streamable HTTP and connect to the endpoint.
 
 </details>
 
+## Limits on the hosted endpoint
+
+The endpoint is public and unauthenticated on purpose: every tool is read-only over public
+datasets, so there is nothing to protect from disclosure. What is worth protecting is the account's
+request budget and the server's standing with the upstreams it proxies.
+
+| Limit | Value | On exceeding |
+| --- | --- | --- |
+| Requests per client IP | 120 / minute, per Cloudflare location | `429` with `Retry-After: 60` |
+| Request body | 1 MB | `413` |
+| `audit_css` source | 400 000 characters | schema validation error |
+
+120/minute is sized against real usage rather than a round number: an agent working through a task
+calls a handful of tools per turn, so a burst of twenty is unremarkable and 120 leaves room for a
+shared address running several clients.
+
+Cloudflare's own guidance prefers keying rate limits on a user or tenant id rather than an IP,
+since an IP can be shared behind NAT or a privacy relay. This endpoint has no authentication and so
+no such id; the limit is set generously enough that the trade is a fair one.
+
+If you expect sustained traffic above this, run your own instance — the whole thing is one Worker
+and deploys in a minute.
+
 ## Layout
 
 ```
